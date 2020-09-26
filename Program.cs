@@ -8,37 +8,49 @@ namespace Lab2
         static void Main(string[] args)
         {
             //инициализация переменных и приветствие
-            string step0, step1, key_str;
-            int key=0;
-            bool result;
+            string step0, step1;
+            int FigureType;
+
             Console.WriteLine("Привет!");
 
             //выбор фигуры
             Console.WriteLine("Выберите фигуру:");
             Console.WriteLine("1)Пешка\n2)Конь\n3)Ладья\n4)Слон\n5)Ферзь\n6)Король");
-            do    //проверка правильности ввода фигуры
-            {   
-                key_str = Console.ReadLine();
-                result = int.TryParse(key_str, out key);
-            } while (IsInputWrong(key,result));
+            //проверка правильности ввода фигуры
+            FigureType = GetFigureType();
 
             //Ввод ходов
+            step0 = GetChessMove();
+            step1 = GetChessMove();
+
+            //проверка
+            IsStepRight(step0, step1, FigureType);
+        }
+        //получение хода
+        static string GetChessMove()
+        {
+            string step;
             do
             {
                 Console.WriteLine("Введите координаты коня до хода:");
-                step0 = Console.ReadLine();
-                StrOptimization(ref step0);
-            } while (IsInputWrong(step0));
-            do
+                step = Console.ReadLine();
+                StrOptimization(ref step);
+            } while (IsInputWrong(step));
+            return step;
+        }
+
+        //выбор фигуры
+        static int GetFigureType()
+        {
+            string key_str;
+            int key;
+            bool result;
+            do    //проверка правильности ввода фигуры
             {
-                Console.WriteLine("Введите координаты коня после хода:");
-                step1 = Console.ReadLine();
-                StrOptimization(ref step1);
-            } while (IsInputWrong(step1));
-
-            //проверка
-            IsStepRight(step0, step1, key);
-
+                key_str = Console.ReadLine();
+                result = int.TryParse(key_str, out key);
+            } while (IsInputWrong(key, result));
+            return key;
         }
 
         //оптимизация строки
@@ -100,22 +112,22 @@ namespace Lab2
             switch(key)
             {
                 case 1:
-                    res=Pawn(s0_xy, s1_xy);
+                    res = IsPawnCorrect(s0_xy, s1_xy);
                     break;
                 case 2:
-                    res = Knight(s0_xy, s1_xy);
+                    res = IsKnightCorrect(s0_xy, s1_xy);
                     break;
                 case 3:
-                    res = Rook(s0_xy, s1_xy);
+                    res = IsRookCorrect(s0_xy, s1_xy);
                     break;
                 case 4:
-                    res = Bishop(s0_xy, s1_xy);
+                    res = IsBishopCorrect(s0_xy, s1_xy);
                     break;
                 case 5:
-                    res = Queen(s0_xy, s1_xy);
+                    res = IsQueenCorrect(s0_xy, s1_xy);
                     break;
                 case 6:
-                    res = King(s0_xy, s1_xy);
+                    res = IsKingCorrect(s0_xy, s1_xy);
                     break;
             }
 
@@ -124,7 +136,7 @@ namespace Lab2
         }
 
         //проверка правильности хода пешкой(Pawn)
-        static bool Pawn(int[] s0_xy,int[] s1_xy)
+        static bool IsPawnCorrect(int[] s0_xy,int[] s1_xy)
         {
             if (s0_xy[0] == s1_xy[0] && ((s0_xy[1] == 1 && (s0_xy[1] - 1 == s1_xy[1] ||
                                                             s0_xy[1] + 1 == s1_xy[1] ||
@@ -139,7 +151,7 @@ namespace Lab2
             else return false;
         }
         //проверка правильности хода королём(King)
-        static bool King(int[] s0_xy, int[] s1_xy)
+        static bool IsKingCorrect(int[] s0_xy, int[] s1_xy)
         {
             if (((s0_xy[0] - 1 == s1_xy[0] || s0_xy[0] + 1 == s1_xy[0]) && (s0_xy[1] - 1 == s1_xy[1] || 
                                                                             s0_xy[1] == s1_xy[1] ||
@@ -150,7 +162,7 @@ namespace Lab2
             else return false;
         }
         //проверка правильности хода конём(Knight)
-        static bool Knight(int[] s0_xy, int[] s1_xy)
+        static bool IsKnightCorrect(int[] s0_xy, int[] s1_xy)
         {
             if ((s0_xy[0] - 2 == s1_xy[0] && (s0_xy[1] - 1 == s1_xy[1] ||
                                               s0_xy[1] + 1 == s1_xy[1])) ||
@@ -166,13 +178,13 @@ namespace Lab2
             else return false;
         }
         //проверка правильности хода ладьёй(Rook)
-        static bool Rook(int[] s0_xy, int[] s1_xy)
+        static bool IsRookCorrect(int[] s0_xy, int[] s1_xy)
         {
             if (s0_xy[0] == s1_xy[0] || s0_xy[1] == s1_xy[1]) return true;
             else return false;
         }
         //проверка правильности хода слоном(Bishop)
-        static bool Bishop(int[] s0_xy, int[] s1_xy)
+        static bool IsBishopCorrect(int[] s0_xy, int[] s1_xy)
         {
             for(int i=1;i<8;i++)
             {
@@ -182,9 +194,9 @@ namespace Lab2
             return false;
         }
         //проверка правильности хода ферзём(Queen)
-        static bool Queen(int[] s0_xy, int[] s1_xy)
+        static bool IsQueenCorrect(int[] s0_xy, int[] s1_xy)
         {
-            if (Rook(s0_xy, s1_xy) || Bishop(s0_xy, s1_xy)) return true;
+            if (IsRookCorrect(s0_xy, s1_xy) || IsBishopCorrect(s0_xy, s1_xy)) return true;
             else return false;
         }
 
